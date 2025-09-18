@@ -20,6 +20,7 @@ from django_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('login/', views.login, name='usuarios/login')
+    path('', views.home, name='cadastro'),
+    path('login/', views.login, name='login'),
+    path('home/', views.usuarios, name='homepage')
 ]

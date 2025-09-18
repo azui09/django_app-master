@@ -16,7 +16,12 @@
             <h1>Cadastre-se</h1>
           </div>
           <div class="h-[400px] w-[550px] bg-white rounded-lg shadow-lg p-8">
-            <form class="flex flex-col items-center gap-y-3">
+            <form
+              action="{% url 'cadastro' %}"
+              method="POST"
+              class="flex flex-col items-center gap-y-3"
+            >
+              {% csrf_token %}
               <div>
                 <label
                   for="username"
@@ -77,16 +82,29 @@
                 <button
                   type="submit"
                   class="bg-slate-800 hover:bg-sky-950 focus:outline-2 focus:outline-offset-2 focus:outline-black active:bg-slate-900 w-28 h-10 rounded-lg"
+                  value="Cadastrar"
                 >
                   Cadastrar
                 </button>
               </div>
             </form>
+            {% if messages %}
+            <div>
+              {% for message in messages %}
+              <div
+                class="p-4 mb-4 text-sm {% if message.tags == 'error' %}text-red-800 bg-red-100{% else %}text-green-800 bg-green-100{% endif %} rounded-lg"
+                role="alert"
+              >
+                {{ message }}
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
             <div class="text-black flex justify-center pt-5">
               <p>
                 Ja possui uma conta?
                 <a
-                  href="/login"
+                  href="{% url 'login' %}"
                   class="font-semibold text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Faça login aqui
