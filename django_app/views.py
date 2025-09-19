@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     if request.method == 'GET':
@@ -33,7 +34,6 @@ def login(request):
         user = authenticate(username=username, password=senha)
         if user is not None:
             auth_login(request, user)
-            messages.success(request, f"Bem vindo de volta, {username}!")
             return redirect('homepage')
         else:
             messages.error(request, f"Usuário ou senha inválidos, tente novamente!")
@@ -41,6 +41,18 @@ def login(request):
     else:
         return render(request, "usuarios/login.html")
 
-
+@login_required(login_url='login')
 def usuarios(request):
-    return render(request, "usuarios/homepage.html")
+    dados_usuario = {
+        'nome_usuario': request.user.username,
+        'email_usuario': request.user.email,
+        'id_usuario': request.user.id
+    }
+
+    return render(request, "usuarios/homepage.html", dados_usuario)
+
+def fazer_logout(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('login')
+    return redirect('login')
