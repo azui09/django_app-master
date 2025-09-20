@@ -6,7 +6,7 @@ class Usuarios(models.Model):
     nome = models.TextField(max_length=255)
     email = models.EmailField()
 
-class Produtos(models.Model):
+class Produto(models.Model):
     nome_produto = models.CharField(max_length=255)
     qtd_produto = models.IntegerField()
 

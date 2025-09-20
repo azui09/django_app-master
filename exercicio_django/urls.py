@@ -23,5 +23,7 @@ urlpatterns = [
     path('', views.home, name='cadastro'),
     path('login/', views.login, name='login'),
     path('home/', views.usuarios, name='homepage'),
-    path('logout/', views.fazer_logout, name='logout')
+    path('logout/', views.fazer_logout, name='logout'),
+    path('adicionar_produto/', views.adicionar_produto, name='adicionar_produto'),
+    path('remover_produto/<int:produto_id/', views.remover_produto, name='remover_produto'),
 ]

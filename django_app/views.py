@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
+from .forms import ProdutoForm
+from .models import Produto
 
 def home(request):
     if request.method == 'GET':
@@ -43,16 +45,36 @@ def login(request):
 
 @login_required(login_url='login')
 def usuarios(request):
-    dados_usuario = {
-        'nome_usuario': request.user.username,
-        'email_usuario': request.user.email,
-        'id_usuario': request.user.id
+    produtos_do_usuario = Produto.objects.filter(usuario=request.user)
+    contexto = {
+        'produtos': produtos_do_usuario
     }
 
-    return render(request, "usuarios/homepage.html", dados_usuario)
+    return render(request, "usuarios/homepage.html", produtos_do_usuario)
 
 def fazer_logout(request):
     if request.method == 'POST':
         logout(request)
         return redirect('login')
     return redirect('login')
+
+@login_required(login_url='login')
+def adicionar_produto(request):
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST)
+        if form.is_valid():
+            produto = form.save(commit=False)
+            produto.usuario = request.user
+            produto.save()
+            return redirect('homepage')
+    else:
+        form = ProdutoForm()
+    return render(request, 'usuarios/adicionar_produto.html', {'form': form})
+
+@login_required(login_url='login')
+def remover_produto(request, produto_id):
+    produto = Produto.objects.get(id=produto_id)
+    if produto.usuario == request.user:
+        produto.delete()
+    return redirect('homepage')
+        

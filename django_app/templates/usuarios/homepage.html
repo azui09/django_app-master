@@ -9,51 +9,90 @@
   <body class="bg-slate-900 text-white">
     <main>
       <section class="flex h-screen items-center justify-evenly">
-        <div class="flex flex-col items-center pl-10">
+        <div class="flex flex-col items-center">
           <div class="font-semibold text-3xl mb-4">
-            Bem vindo de volta, {{ nome_usuario }}
+            Bem vindo de volta, {{ user.username }}
           </div>
+
           <div
-            class="h-[300px] w-[450px] rounded-lg shadow-lg bg-white mx-auto"
+            class="h-[300px] w-[450px] rounded-lg shadow-lg bg-white p-8 flex flex-col justify-center"
           >
-            <div
-              class="text-lg text-slate-900 flex flex-col justify-center items-center h-full"
-            >
-              <div
-                class="text-lg text-slate-900 flex flex-col justify-center gap-y-8"
+            <div class="text-lg text-slate-900 flex flex-col gap-y-8">
+              <p>
+                <span class="font-bold">Nome de Usuário:</span>
+                <span class="font-mono">{{ user.username }}</span>
+              </p>
+              <p>
+                <span class="font-bold">Email:</span>
+                <span class="font-mono">{{ user.email }}</span>
+              </p>
+              <p>
+                <span class="font-bold">ID de Usuário:</span>
+                <span class="font-mono">{{ user.id }}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <form action="{% url 'logout' %}" method="POST">
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="bg-red-600 text-white hover:bg-red-700 focus:outline-2 focus:outline-offset-2 focus:outline-white active:bg-red-800 w-28 h-10 rounded-lg"
               >
-                <p>
-                  <span class="font-bold">Nome de Usuário:</span>
-                  <span class="font-mono">{{ user.username }}</span>
-                </p>
-                <p>
-                  <span class="font-bold">Email:</span>
-                  <span class="font-mono">{{ user.email }}</span>
-                </p>
-                <p>
-                  <span class="font-bold">ID de Usuário:</span>
-                  <span class="font-mono">{{ user.id }}</span>
-                </p>
-              </div>
-            </div>
-            <div>
-              <form action="{% url 'logout' %}" method="POST" class="inline">
-                {% csrf_token %}
-                <button
-                  type="submit"
-                  class="bg-slate-800 hover:bg-sky-950 focus:outline-2 focus:outline-offset-2 focus:outline-black active:bg-slate-900 w-28 h-10 rounded-lg"
-                >
-                  Log out
-                </button>
-              </form>
-            </div>
+                Log out
+              </button>
+            </form>
           </div>
         </div>
+
         <div class="flex flex-col items-center">
           <div class="font-semibold text-3xl mb-4">Itens cadastrados</div>
+
           <div
-            class="h-[300px] w-[900px] rounded-lg shadow-lg bg-white flex items-center justify-center"
-          ></div>
+            class="h-[500px] w-[1000px] rounded-lg shadow-lg bg-white text-slate-900 p-6 overflow-y-auto"
+          >
+            <div class="flex justify-between items-center mb-4 pb-2 border-b">
+              <h3 class="text-xl font-bold">Seus Produtos</h3>
+              <a
+                href="{% url 'adicionar_produto' %}"
+                class="bg-blue-500 py-2 px-4 rounded-lg hover:bg-blue-600 text-white"
+                >Adicionar Produto</a
+              >
+            </div>
+
+            <div>
+              {% for produto in produtos %}
+              <div
+                class="flex justify-between items-center py-2 px-2 hover:bg-gray-100 rounded-md"
+              >
+                <span>
+                  <span class="font-semibold">{{ produto.nome }}</span>
+                  <span class="text-gray-600"
+                    >(Quantidade: {{ produto.quantidade }})</span
+                  >
+                </span>
+
+                <form
+                  action="{% url 'remover_produto' produto.id %}"
+                  method="POST"
+                >
+                  {% csrf_token %}
+                  <button
+                    type="submit"
+                    class="bg-red-500 text-white py-1 px-3 rounded-md text-sm hover:bg-red-600"
+                  >
+                    Remover
+                  </button>
+                </form>
+              </div>
+              {% empty %}
+              <p class="text-center text-gray-500 mt-10">
+                Você ainda não cadastrou nenhum produto.
+              </p>
+              {% endfor %}
+            </div>
+          </div>
         </div>
       </section>
     </main>
